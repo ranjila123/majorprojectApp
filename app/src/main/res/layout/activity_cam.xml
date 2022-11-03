@@ -30,5 +30,25 @@
         android:layout_marginBottom="37dp"
         android:layout_marginRight="39dp"/>
 
+    <ImageView
+        android:onClick="checkG"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:src="@drawable/circle"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="100dp"
+        android:contentDescription="@string/i1" />
+
+    <ImageView
+        android:onClick="checkG"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:src="@drawable/ic_baseline_folder_24"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="37dp"
+        android:layout_marginRight="119dp"/>
 
 </RelativeLayout>
