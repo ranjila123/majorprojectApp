@@ -4,4 +4,8 @@
     <string name="national_college_of_engineering">National College of Engineering</string>
     <string name="i1">TODO</string>
     <string name="front">TODO</string>
+    <string name="start">start</string>
+    <string name="welcome_to_form">welcome</string>
+    <string name="todo">todo</string>
+    <string name="extract">Extract</string>
 </resources>
