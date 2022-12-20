@@ -148,7 +148,7 @@ public class CamActivity extends AppCompatActivity {
             // Continue only if the File was successfully created
             if (photoFile != null) {
                 Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.example.major.android.file-provider",
+                        "com.example.major.fileProvider",
                         photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, Cam_Request_Code);
