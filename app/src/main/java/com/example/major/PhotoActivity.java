@@ -115,7 +115,7 @@ public class PhotoActivity extends AppCompatActivity implements RecyclerAdapter.
         if (requestCode == 10) {
             if (resultCode == RESULT_OK) {
                 ClipData clipData = data.getClipData();
-                if (clipData != null) {
+                if (clipData != null) {  //when multiple images are selected
                     //limiting no of images picked from gallery
                     for (int i = 0; i < clipData.getItemCount(); i++) {
 

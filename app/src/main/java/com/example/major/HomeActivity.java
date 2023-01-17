@@ -15,7 +15,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
     }
     public void openCamActivity(View v){
-        Intent intent = new Intent(HomeActivity.this,PhotoActivity.class);
+        Intent intent = new Intent(HomeActivity.this,ImageActivity.class);
         startActivity(intent);
     }
 }

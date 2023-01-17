@@ -2,6 +2,8 @@ package com.example.major;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import android.Manifest;
@@ -24,21 +26,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-
-import com.google.android.gms.tasks.OnCanceledListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.UUID;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -49,14 +42,17 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class CamActivity extends AppCompatActivity {
+public class ImageActivity extends AppCompatActivity {
 
-    ImageView img;
-    Button camera;
-    Button extract;
+    ImageView camera;
+    ImageView gallery;
+    ImageView image;
     private final int Cam_Request_Code = 100;
+    int Read_Permission = 0;
+    int PERMISSION_CODE = 1;
     TextView textView;
-//    StorageReference storageReference;
+    Uri uri;
+
     String currentPhotoPath;
 
     boolean imagesSelected = false; // Whether the user selected at least an image or not.
@@ -69,37 +65,54 @@ public class CamActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cam);
+        setContentView(R.layout.activity_image);
 
-        img = findViewById(R.id.imageView);
         camera = findViewById(R.id.camera);
-        extract = findViewById(R.id.extract);
-        textView= findViewById(R.id.textView);
+        gallery = findViewById(R.id.gallery);
+        image = findViewById(R.id.imageView2);
+        textView = findViewById(R.id.textView2);
 
-
-//        extract.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Toast.makeText(CamActivity.this, "Extract text here", Toast.LENGTH_SHORT).show();
-//            }
-//        });
+        handlePermission();
 
         camera.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-
-//                    Intent icam = new Intent();
-//                    icam.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-//                    startActivityForResult(icam, Cam_Request_Code);
+            public void onClick(View v) {
                 dispatchTakePictureIntent();
             }
         });
+
+        gallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select picture"), 10);
+            }
+        });
+
+    }
+
+    private void handlePermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.CAMERA) ==
+                    PackageManager.PERMISSION_DENIED || checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
+                    PackageManager.PERMISSION_DENIED) {
+                String[] permission = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                requestPermissions(permission, PERMISSION_CODE);
+            }
+        }
+
+        if (ContextCompat.checkSelfPermission(ImageActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(ImageActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, Read_Permission);
+        }
+
     }
 
 
     public void connectServer(View v){
         if (imagesSelected == false) { // This means no image is selected and thus nothing to upload.
-            textView.setText("No Image Selected to Upload. Select Image(s) and Try Again.");
+            textView.setText("No Image Selected to Upload. Select Image and Try Again.");
             return;
         }
         textView.setText("Sending the Files. Please Wait ...");
@@ -116,7 +129,7 @@ public class CamActivity extends AppCompatActivity {
             Log.d("check","medd" + bitmap);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
             byte[] byteArray = stream.toByteArray();
-            multipartBodyBuilder.addFormDataPart("image" , "Android_Flask_"+"camera"+".jpg", RequestBody.create(MediaType.parse("image/*jpg"), byteArray));
+            multipartBodyBuilder.addFormDataPart("image" , "Android_Flask_"+".jpg", RequestBody.create(MediaType.parse("image/*jpg"), byteArray));
             RequestBody postBodyImage = multipartBodyBuilder.build();
             postRequest(postUrl, postBodyImage);
         }catch (Exception e){
@@ -126,8 +139,6 @@ public class CamActivity extends AppCompatActivity {
         }
 
     }
-
-
 
     void postRequest(String postUrl, RequestBody postBody) {
 
@@ -170,12 +181,9 @@ public class CamActivity extends AppCompatActivity {
         });
     }
 
-
-
     @Override
     protected void onActivityResult ( int requestCode, int resultCode, @Nullable Intent data){
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == Cam_Request_Code) {
             if (resultCode == Activity.RESULT_OK) {
 
@@ -184,8 +192,8 @@ public class CamActivity extends AppCompatActivity {
 //                img.setImageBitmap(image);
 
                 File f = new File(currentPhotoPath);
-                img.setImageURI(Uri.fromFile(f));
-                Uri uri = Uri.fromFile(f);
+                image.setImageURI(Uri.fromFile(f));
+                uri = Uri.fromFile(f);
                 selectedImagePath = getPath(getApplicationContext(), uri);
                 imagesSelected = true;
 
@@ -199,26 +207,21 @@ public class CamActivity extends AppCompatActivity {
 //               uploadFirebase(f.getName(),contentUri);
             }
         }
+        else {
+            if (requestCode == 10) {
+                if (resultCode == RESULT_OK) {
+                    uri = data.getData();
+                    image.setImageURI(uri);
+                    selectedImagePath = getPath(getApplicationContext(), uri);
+                    imagesSelected = true;
+
+
+                }
+            }
+
+        }
 
     }
-
-//    private void uploadFirebase(String name, Uri contentUri) {
-//        storageReference  = FirebaseStorage.getInstance().getReference().child("images/" + name );
-//        storageReference.putFile(contentUri)
-//                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                    @Override
-//                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                        Toast.makeText(CamActivity.this, "Images Uploaded", Toast.LENGTH_SHORT).show();
-//                    }
-//                })
-//                .addOnCanceledListener(new OnCanceledListener() {
-//                    @Override
-//                    public void onCanceled() {
-//                        Toast.makeText(CamActivity.this, "Uploading failed", Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//    }
-
 
     private File createImageFile() throws IOException {
         // Create an image file name
