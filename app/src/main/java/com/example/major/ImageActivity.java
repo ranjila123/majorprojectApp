@@ -8,8 +8,10 @@ import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -26,6 +28,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -50,15 +53,16 @@ public class ImageActivity extends AppCompatActivity {
     private final int Cam_Request_Code = 100;
     int Read_Permission = 0;
     int PERMISSION_CODE = 1;
-    TextView textView;
+//    TextView textView;
     Uri uri;
 
     String currentPhotoPath;
 
     boolean imagesSelected = false; // Whether the user selected at least an image or not.
+    boolean dataExtracted = false;
     String selectedImagePath;
 
-    private String postUrl="http://192.168.1.75:8000/";//****Put your  URL here******
+    private String postUrl="http://192.168.1.77:8000/";//****Put your  URL here******
     private String POST="POST";
     private String GET="GET";
 
@@ -70,7 +74,7 @@ public class ImageActivity extends AppCompatActivity {
         camera = findViewById(R.id.camera);
         gallery = findViewById(R.id.gallery);
         image = findViewById(R.id.imageView2);
-        textView = findViewById(R.id.textView2);
+//        textView = findViewById(R.id.textView2);
 
         handlePermission();
 
@@ -112,10 +116,12 @@ public class ImageActivity extends AppCompatActivity {
 
     public void connectServer(View v){
         if (imagesSelected == false) { // This means no image is selected and thus nothing to upload.
-            textView.setText("No Image Selected to Upload. Select Image and Try Again.");
+            Toast.makeText(this, "No Image Selected to Upload. Select Image and Try Again.", Toast.LENGTH_SHORT).show();
+//            textView.setText("No Image Selected to Upload. Select Image and Try Again.");
             return;
         }
-        textView.setText("Sending the Files. Please Wait ...");
+        Toast.makeText(this, "Extracting the data. Please Wait ...", Toast.LENGTH_SHORT).show();
+//        textView.setText("Extracting the data. Please Wait ...");
 
         MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder().setType(MultipartBody.FORM);
 
@@ -134,9 +140,40 @@ public class ImageActivity extends AppCompatActivity {
             postRequest(postUrl, postBodyImage);
         }catch (Exception e){
             Log.d("testimage", "connectServer: "+e.getLocalizedMessage());
-            textView.setText("Please Make Sure the Selected File is an Image."+e);
+            Toast.makeText(this, "Please Make Sure the Selected File is an Image.\"+e", Toast.LENGTH_SHORT).show();
+            //textView.setText("Please Make Sure the Selected File is an Image."+e);
             return;
         }
+//        dataExtracted = true;
+    }
+
+
+    public void finish(View v){
+//        if(dataExtracted==false){
+//            Toast.makeText(this, "There was no data extraction. Please begin by extracting data.", Toast.LENGTH_SHORT).show();
+////            textView.setText("No Image Selected to Upload. Select Image and Try Again.");
+//            return;
+//        }
+
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(ImageActivity.this);
+        alertDialog.setTitle("Confirm");
+        alertDialog.setIcon(R.drawable.ic_baseline_question_mark_24);
+        alertDialog.setMessage("Are you sure you have finnished selecting the images?");
+        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Toast.makeText(ImageActivity.this, "Getting ready for download...", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(ImageActivity.this,ProgressbarActivity.class);
+                startActivity(intent);
+            }
+        });
+        alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Toast.makeText(ImageActivity.this, "Please select other images...", Toast.LENGTH_SHORT).show();
+            }
+        });
+        alertDialog.show();
 
     }
 
@@ -159,7 +196,8 @@ public class ImageActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        textView.setText("Failed to Connect to Server");
+                        Toast.makeText(ImageActivity.this, "Failed to Connect to Server", Toast.LENGTH_SHORT).show();
+                        //textView.setText("Failed to Connect to Server");
                     }
                 });
             }
@@ -171,7 +209,8 @@ public class ImageActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         try {
-                            textView.setText(response.body().string());
+                            Toast.makeText(ImageActivity.this, response.body().string(), Toast.LENGTH_SHORT).show();
+                            //textView.setText(response.body().string());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -215,7 +254,6 @@ public class ImageActivity extends AppCompatActivity {
                     selectedImagePath = getPath(getApplicationContext(), uri);
                     imagesSelected = true;
 
-
                 }
             }
 
@@ -226,12 +264,12 @@ public class ImageActivity extends AppCompatActivity {
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "PNG_" + timeStamp + "_";
+        String imageFileName = "JPEG_" + timeStamp + "_";
         // File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES); //for image to appear in gallery
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
-                ".png",         /* suffix */
+                ".jpg",         /* suffix */
                 storageDir      /* directory */
         );
 

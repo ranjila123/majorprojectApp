@@ -37,14 +37,14 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="256dp"
-        android:layout_height="311dp"
+        android:layout_width="288dp"
+        android:layout_height="337dp"
         android:layout_marginStart="70dp"
         android:layout_marginEnd="70dp"
-        android:layout_marginBottom="36dp"
-        app:layout_constraintBottom_toTopOf="@+id/button2"
+        android:layout_marginBottom="76dp"
+        app:layout_constraintBottom_toTopOf="@+id/download"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.466"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/ic_launcher_foreground" />
 
@@ -52,25 +52,33 @@
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="70dp"
-        android:layout_marginEnd="70dp"
-        android:layout_marginBottom="36dp"
+        android:layout_marginStart="84dp"
+        android:layout_marginBottom="124dp"
         android:onClick="connectServer"
         android:text="Extract"
-        app:layout_constraintBottom_toTopOf="@+id/textView2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="239dp"
-        android:layout_height="34dp"
+    <Button
+        android:id="@+id/download"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="164dp"
         android:layout_marginBottom="124dp"
-        android:text=""
-        android:textColor="#E62C2C"
+        android:onClick="finish"
+        android:text="Finish"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="@id/button2" />
+
+    <!--    <TextView-->
+<!--        android:id="@+id/textView2"-->
+<!--        android:layout_width="239dp"-->
+<!--        android:layout_height="34dp"-->
+<!--        android:layout_marginBottom="124dp"-->
+<!--        android:text=""-->
+<!--        android:textColor="#E62C2C"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

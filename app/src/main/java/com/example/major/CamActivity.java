@@ -62,7 +62,7 @@ public class CamActivity extends AppCompatActivity {
     boolean imagesSelected = false; // Whether the user selected at least an image or not.
     String selectedImagePath;
 
-    private String postUrl="http://192.168.1.75:8000/";//****Put your  URL here******
+    private String postUrl="http://192.168.1.75:5000/";//****Put your  URL here******
     private String POST="POST";
     private String GET="GET";
 
