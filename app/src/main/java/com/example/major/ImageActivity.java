@@ -144,16 +144,16 @@ public class ImageActivity extends AppCompatActivity {
             //textView.setText("Please Make Sure the Selected File is an Image."+e);
             return;
         }
-//        dataExtracted = true;
+        dataExtracted = true;
     }
 
 
     public void finish(View v){
-//        if(dataExtracted==false){
-//            Toast.makeText(this, "There was no data extraction. Please begin by extracting data.", Toast.LENGTH_SHORT).show();
-////            textView.setText("No Image Selected to Upload. Select Image and Try Again.");
-//            return;
-//        }
+        if(dataExtracted==false){
+            Toast.makeText(this, "There was no data extraction. Please begin by extracting data.", Toast.LENGTH_SHORT).show();
+//            textView.setText("No Image Selected to Upload. Select Image and Try Again.");
+            return;
+        }
 
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(ImageActivity.this);
         alertDialog.setTitle("Confirm");
@@ -189,6 +189,7 @@ public class ImageActivity extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                Log.d("return", "connectServer: "+e.getLocalizedMessage());
                 // Cancel the post on failure.
                 call.cancel();
 
@@ -209,6 +210,7 @@ public class ImageActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         try {
+                            Log.d("return", "onResponse");
                             Toast.makeText(ImageActivity.this, response.body().string(), Toast.LENGTH_SHORT).show();
                             //textView.setText(response.body().string());
                         } catch (IOException e) {
