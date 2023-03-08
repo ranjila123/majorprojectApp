@@ -66,6 +66,8 @@ public class DownloadActivity extends AppCompatActivity {
             request.setDestinationInExternalFilesDir(this, Environment.DIRECTORY_DOWNLOADS, filename);
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
             Long reference = downloadManager.enqueue(request);
+            Intent intent = new Intent(DownloadActivity.this,ImageActivity.class);
+            startActivity(intent);
         }catch (Exception e){
             Log.d("download", "downloadError: "+e.getLocalizedMessage());
             Intent intent = new Intent(DownloadActivity.this,ErrorActivity.class);
