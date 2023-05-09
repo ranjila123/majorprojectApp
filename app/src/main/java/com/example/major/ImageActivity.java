@@ -62,7 +62,7 @@ public class ImageActivity extends AppCompatActivity {
     boolean dataExtracted = false;
     String selectedImagePath;
 
-    private String postUrl="http://192.168.1.77:8000/";//****Put your  URL here******
+    private String postUrl="http://192.168.0.233:8000/";//****Put your  URL here******
     private String POST="POST";
     private String GET="GET";
 
@@ -193,11 +193,12 @@ public class ImageActivity extends AppCompatActivity {
                 // Cancel the post on failure.
                 call.cancel();
 
+
                 // In order to access the TextView inside the UI thread, the code is executed inside runOnUiThread()
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(ImageActivity.this, "Failed to Connect to Server", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ImageActivity.this, "....", Toast.LENGTH_SHORT).show();
                         //textView.setText("Failed to Connect to Server");
                     }
                 });

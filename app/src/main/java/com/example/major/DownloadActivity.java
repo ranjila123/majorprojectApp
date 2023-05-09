@@ -61,7 +61,7 @@ public class DownloadActivity extends AppCompatActivity {
         try {
             String filename = name.getText().toString().trim()+".csv";
             downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-            Uri uri = Uri.parse("http://192.168.1.77:8000/download_csv");
+            Uri uri = Uri.parse("http://192.168.0.233:8000/download_csv");
             DownloadManager.Request request = new DownloadManager.Request(uri);
             request.setDestinationInExternalFilesDir(this, Environment.DIRECTORY_DOWNLOADS, filename);
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
